@@ -54,7 +54,7 @@ extension HapticEventParameter {
 
 // MARK: - HapticEventEventType
 
-@objc(CHHapticEventEventType)
+@objc(HapticEventEventType)
 class HapticEventEventType: NSObject {
     let rawValue: String
     

@@ -6,17 +6,21 @@
 
 react-native-core-haptics is a lightweight iOS-only module designed to expose the following Core Haptics methods to React Native:
 
-- `CHHapticEngine -capabilitiesForHardware`
+- `-capabilitiesForHardware`
 - `-stop`
 - `-makePlayer`
 - `-start`
 
 This requires surfacing the following classes:
 
-- `CHHapticEngine`
-- `CHHapticEventParameter`
-- `CHHapticEvent`
-- `CHHapticPattern`
+- `HapticDeviceCapabilty`
+- `HapticEventParameterID`
+- `HapticEventParameter`
+- `HapticEventEventType`
+- `HapticEvent`
+- `HapticPattern`
+- `HapticPatternPlayer`
+- `HapticEngine`
 
 These features are made available using syntax and patterns that resemble the native Swift implementation as closely as possible.
 
@@ -34,7 +38,8 @@ npm install -s SnowcodeDesign/react-native-core-haptics
 
 ```js
 // import the needed classes at the top of the file
-import { * } from 'SnowcodeDesign/react-native-core-haptics-api';
+import HapticEngine from 'SnowcodeDesign/react-native-core-haptics-api';
+// can also import: HapticDeviceCapabilty, HapticEventParameterID, HapticEventParameter, HapticEventEventType, HapticEvent, HapticPattern, HapticPatternPlayer, 
 
 // when setting up your component...
 const engine = await HapticEngine.create();
@@ -69,20 +74,20 @@ if (shouldStop) {
 let patterns = [];
 for (let event in events) {
     const parameters = event.eventParameters.map(parameter => {
-        const parameterID = new CHHapticEventParameterID(parameter.id);
+        const parameterID = new HapticEventParameterID(parameter.id);
         const value = parameter.value;
-        const eventParameter = new CHHapticEventParameter(
+        const eventParameter = new HapticEventParameter(
             parameterID, 
             value
         );
         return eventParameter;
     });
 
-    const eventType = CHHapticEventEventType(event.eventType);
+    const eventType = HapticEventEventType(event.eventType);
     const relativeTime = event.relativeTime;
     const duration = event.duration;
 
-    const hapticEvent = new CHHapticEvent(
+    const hapticEvent = new HapticEvent(
         eventType, 
         parameters, 
         relativeTime, 
@@ -92,7 +97,7 @@ for (let event in events) {
     const hapticEvents = [hapticEvent];
 
      try {
-        const pattern = new CHHapticPattern(
+        const pattern = new HapticPattern(
             hapticEvents
         );
     } catch (e) {
