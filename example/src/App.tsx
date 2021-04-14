@@ -9,14 +9,13 @@ export default function App() {
   );
 
   React.useEffect(() => {
-    HapticEngine.getSupportsHaptics().then(supportsHaptics => {
+    HapticEngine.getSupportsHaptics().then((supportsHaptics) => {
       if (supportsHaptics) {
         setResult('Supports Haptics! :)');
       } else {
         setResult('Does Not Support Haptics :(');
       }
     });
-
 
     // HapticEngine.create()
     //   .then((success) => {
@@ -33,7 +32,7 @@ export default function App() {
     //           'HapticEngine.capabilitiesForHardware() response =',
     //           capable
     //         );
-            
+
     //         const capabilities = HapticEngine.getCapabilities();
     //         console.log(
     //           'HapticEngine.getCapabilities() response =',

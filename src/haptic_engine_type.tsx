@@ -1,8 +1,8 @@
 import { NativeModules } from 'react-native';
 
-import type HapticDeviceCapabilty from './haptic_device_capability_type';
+// import type HapticDeviceCapabilty from './haptic_device_capability_type';
 import type HapticPattern from './haptic_pattern_type';
-import type HapticPatternPlayer from './haptic_pattern_player_type';
+// import type HapticPatternPlayer from './haptic_pattern_player_type';
 
 type HapticEngineType = {
   // player: typeof HapticPatternPlayer;
