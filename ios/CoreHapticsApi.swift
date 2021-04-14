@@ -130,8 +130,8 @@ class HapticPatternPlayer: NSObject {
         self.player = player
     }
     
-    @objc(play:resolve:reject:)
-    func start(_ startTime: TimeInterval,
+    @objc(start:resolve:reject:)
+    func start(startTime: TimeInterval,
                resolve: RCTPromiseResolveBlock,
                reject: RCTPromiseRejectBlock) {
         do {
@@ -171,7 +171,7 @@ class HapticEngine: NSObject {
     }
     
     @objc(makePlayer:)
-    func makePlayer(_ pattern: HapticPattern,
+    func makePlayer(pattern: HapticPattern,
                     resolve: RCTPromiseResolveBlock,
                     reject: RCTPromiseRejectBlock) {
         
@@ -191,6 +191,7 @@ class HapticEngine: NSObject {
                reject: RCTPromiseRejectBlock) {
         do {
             self.engine.start()
+            resolve();
         } catch let e {
             reject(e)
         }

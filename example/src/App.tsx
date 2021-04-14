@@ -1,14 +1,14 @@
 import * as React from 'react';
 
 import { StyleSheet, View, Text } from 'react-native';
-import HapticEngine from 'react-native-core-haptics-api';
+import { HapticEngine } from 'react-native-core-haptics-api';
 
 export default function App() {
   const [result, setResult] = React.useState<number | undefined>();
 
   React.useEffect(() => {
-    const engine = new HapticEngine();
-    setResult(engine.capabilitiesForHardware().supportsHaptics ? 1 : 0);
+    const capabilitiesForHardware = HapticEngine.capabilitiesForHardware();
+    setResult(capabilitiesForHardware.supportsHaptics ? 1 : 0);
   }, []);
 
   return (
