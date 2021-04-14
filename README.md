@@ -1,10 +1,12 @@
+![](rn_ch.png)
+
 # react-native-core-haptics-api
 
-📳  react native &lt;> iOS Core Haptics
+✋ React Native → iOS Core Haptics
 
 ## About
 
-react-native-core-haptics is a lightweight iOS-only module designed to expose the following Core Haptics methods to React Native:
+react-native-core-haptics-api is a lightweight iOS-only module designed to expose the following Core Haptics methods to React Native:
 
 - `-capabilitiesForHardware`
 - `-stop`
@@ -47,7 +49,7 @@ npm install SnowcodeDesign/react-native-core-haptics-api
 import { HapticEngine, HapticEventParameterID, HapticEventParameter, HapticEventEventType, HapticEvent, HapticEvent, HapticPattern } from 'SnowcodeDesign/react-native-core-haptics-api';
 
 // when setting up your component...
-const engine = await HapticEngine.create();
+await HapticEngine.create();
 
 // later down, in the implementation...
 const startTime = 0;
@@ -65,13 +67,14 @@ const events = [{
 }];
 
 // then, when you're ready to play...
-if (!engine.capabilitiesForHardware().supportsHaptics) {
+await HapticEngine.capabilitiesForHardware();
+if (!HapticEngine.getCapabilities().supportsHaptics) {
     return;
 }
 
 const shouldStop = false;
 if (shouldStop) {
-    await engine.stop();
+    await HapticEngine.stop();
     return;
 }
 
@@ -118,10 +121,9 @@ for (let event in events) {
 
 // now, time to play all the constructed patterns...
 for (let pattern of patterns) {
-    const player = await engine.makePlayer(decodedPattern);
-
+    await engine.makePlayer(pattern); // no need to store a ref, handled by engine internally
     await engine.start();
-    await player.start(startTime);
+    await engine.getPlayer().start(startTime);
 }
 ```
 

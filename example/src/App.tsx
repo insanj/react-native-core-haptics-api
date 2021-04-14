@@ -4,25 +4,60 @@ import { StyleSheet, View, Text } from 'react-native';
 import { HapticEngine } from 'react-native-core-haptics-api';
 
 export default function App() {
-  const [result, setResult] = React.useState<boolean | undefined>();
+  const [result, setResult] = React.useState<string | undefined>(
+    'Is Loading...'
+  );
 
   React.useEffect(() => {
-    HapticEngine.create().then((engine) => {
-      const capabilities = engine.capabilitiesForHardware();
-      setResult(capabilities.supportsHaptics);
-    }).catch(e => {
-      console.log(e);
+    HapticEngine.getSupportsHaptics().then(supportsHaptics => {
+      if (supportsHaptics) {
+        setResult('Supports Haptics! :)');
+      } else {
+        setResult('Does Not Support Haptics :(');
+      }
     });
+
+
+    // HapticEngine.create()
+    //   .then((success) => {
+    //     console.log('HapticEngine.create() response =', success);
+
+    //     if (!success) {
+    //       setResult('Cannot detect if it supports haptics :/');
+    //       return;
+    //     }
+
+    //     HapticEngine.capabilitiesForHardware()
+    //       .then((capable) => {
+    //         console.log(
+    //           'HapticEngine.capabilitiesForHardware() response =',
+    //           capable
+    //         );
+            
+    //         const capabilities = HapticEngine.getCapabilities();
+    //         console.log(
+    //           'HapticEngine.getCapabilities() response =',
+    //           capabilities
+    //         );
+
+    //         if (capabilities.supportsHaptics) {
+    //           setResult('Supports Haptics! :)');
+    //         } else {
+    //           setResult('Does Not Support Haptics :(');
+    //         }
+    //       })
+    //       .catch((e) => {
+    //         console.log(e);
+    //       });
+    //   })
+    //   .catch((e) => {
+    //     console.log(e);
+    //   });
   }, []);
 
   return (
     <View style={styles.container}>
-      <Text>
-        This Device:{' '}
-        {result
-          ? 'This Device Supports Haptics! :)'
-          : 'This Device Does Not Support Haptics :('}
-      </Text>
+      <Text>This Device: {result}</Text>
     </View>
   );
 }

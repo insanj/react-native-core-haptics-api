@@ -166,23 +166,6 @@ extension HapticPattern {
 @objc(HapticPatternPlayer)
 class HapticPatternPlayer: NSObject {
     var player: CoreHaptics.CHHapticPatternPlayer?
-    
-    @objc(start:resolve:reject:)
-    func start(startTime: TimeInterval,
-               resolve: RCTPromiseResolveBlock,
-               reject: RCTPromiseRejectBlock) {
-        guard let player = self.player else {
-            reject("Unable to start player", "No player has been created", nil);
-            return
-        }
-        
-        do {
-            try player.start(atTime: startTime)
-            resolve(nil)
-        } catch let e {
-            reject("Unable to start player", e.localizedDescription, e)
-        }
-    }
 }
 
 extension HapticPatternPlayer {
@@ -197,20 +180,45 @@ extension HapticPatternPlayer {
 @objc(HapticEngine)
 class HapticEngine: NSObject {
     var engine: CoreHaptics.CHHapticEngine?
-    
-    @objc(capabilitiesForHardware)
-    func capabilitiesForHardware() -> HapticDeviceCapabilty {
-        var capability = HapticDeviceCapabilty()
-        capability = capability.create(CoreHaptics.CHHapticEngine.capabilitiesForHardware())
-        return capability
+    var player: HapticPatternPlayer?
+        
+    @objc(getSupportsHaptics:reject:)
+    func getSupportsHaptics(resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        let hapticCapabilities = CoreHaptics.CHHapticEngine.capabilitiesForHardware()
+        resolve(hapticCapabilities.supportsHaptics)
     }
+  
+    @objc(startPlayerAtTime:resolve:reject:)
+    func startPlayerAtTime(startTime: TimeInterval, resolve: RCTPromiseResolveBlock,  reject: RCTPromiseRejectBlock) {
+        guard let player = self.player?.player else {
+            reject("Unable to start player", "No player has been created", nil)
+            return
+        }
+        
+        do {
+            try player.start(atTime: startTime)
+            resolve(nil)
+        } catch let e {
+            reject("Unable to start player", e.localizedDescription, e)
+        }
+    }
+
+    // @objc(capabilitiesForHardware:reject:)
+    // func capabilitiesForHardware(resolve: RCTPromiseResolveBlock,
+    //      reject: RCTPromiseRejectBlock) {
+    //     var deviceCapabilities = HapticDeviceCapabilty()
+    //     deviceCapabilities = deviceCapabilities.create(CoreHaptics.CHHapticEngine.capabilitiesForHardware())
+    //     self.capabilities = deviceCapabilities
+    //     resolve(true)
+    // }
     
     @objc(create:reject:)
     func create(resolve: RCTPromiseResolveBlock,
          reject: RCTPromiseRejectBlock) {
         do {
-            self.engine = try CoreHaptics.CHHapticEngine()
-            resolve(self)
+            let newEngine = HapticEngine()
+            newEngine.engine = try CoreHaptics.CHHapticEngine()
+            resolve(true)
         } catch let e {
             reject("Unable to create engine", e.localizedDescription, e)
         }
@@ -236,9 +244,11 @@ class HapticEngine: NSObject {
                 return
             }
             
-            var patternPlayer = HapticPatternPlayer()
-            patternPlayer = patternPlayer.create(player)
-            resolve(patternPlayer)
+            var newPatternPlayer = HapticPatternPlayer()
+            newPatternPlayer = newPatternPlayer.create(player)
+            self.player = newPatternPlayer
+            
+            resolve(true)
         } catch let e {
             reject("Unable to make player", e.localizedDescription, e)
         }
