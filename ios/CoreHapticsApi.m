@@ -42,4 +42,9 @@ RCT_EXTERN_METHOD(makePlayer:(HapticPattern)hapticPattern
 RCT_EXTERN_METHOD(startWithResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
++ (BOOL)requiresMainQueueSetup
+{
+    return YES;
+}
+
 @end

@@ -1,18 +1,11 @@
-import { NativeModules } from 'react-native';
-
 import type HapticDeviceCapabilty from './haptic_device_capability_type';
 import type HapticPattern from './haptic_pattern_type';
 import type HapticPatternPlayer from './haptic_pattern_player_type';
-
-type HapticEngineType = {
+declare type HapticEngineType = {
     capabilitiesForHardware(): typeof HapticDeviceCapabilty;
     create(): Promise<HapticEngineType>;
     makePlayer(pattern: typeof HapticPattern): Promise<typeof HapticPatternPlayer>;
     start(): Promise<void>;
-  };
-  
-const { 
-    HapticEngine,
-} = NativeModules;
-
-export default HapticEngine as HapticEngineType;
+};
+declare const _default: HapticEngineType;
+export default _default;
