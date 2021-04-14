@@ -30,16 +30,21 @@ Read more about [Core Haptics on the Apple Developer site](https://developer.app
 
 ## Install
 
+```sh
+yarn install SnowcodeDesign/react-native-core-haptics-api
 ```
-npm install -s SnowcodeDesign/react-native-core-haptics
+
+or
+
+```sh
+npm install SnowcodeDesign/react-native-core-haptics-api
 ```
 
 ## Usage
 
 ```js
 // import the needed classes at the top of the file
-import HapticEngine from 'SnowcodeDesign/react-native-core-haptics-api';
-// can also import: HapticDeviceCapabilty, HapticEventParameterID, HapticEventParameter, HapticEventEventType, HapticEvent, HapticPattern, HapticPatternPlayer, 
+import { HapticEngine, HapticEventParameterID, HapticEventParameter, HapticEventEventType, HapticEvent, HapticEvent, HapticPattern } from 'SnowcodeDesign/react-native-core-haptics-api';
 
 // when setting up your component...
 const engine = await HapticEngine.create();
@@ -66,7 +71,7 @@ if (!engine.capabilitiesForHardware().supportsHaptics) {
 
 const shouldStop = false;
 if (shouldStop) {
-    engine.stop();
+    await engine.stop();
     return;
 }
 

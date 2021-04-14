@@ -8,7 +8,7 @@ class HapticDeviceCapabilty: NSObject {
     let supportsAudio: Bool
 
     @objc
-    init(_ capabilities: HapticDeviceCapabilty) {
+    init(_ capabilities: CHHapticDeviceCapabilty) {
         self.supportsHaptics = capabilities.supportsHaptics
         self.supportsAudio = capabilities.supportsAudio
     }
@@ -189,11 +189,24 @@ class HapticEngine: NSObject {
     @objc(start)
     func start(resolve: RCTPromiseResolveBlock,
                reject: RCTPromiseRejectBlock) {
-        do {
-            self.engine.start()
-            resolve();
-        } catch let e {
-            reject(e)
-        }
+        self.engine.start(completionHandler: { (err) in
+            if let err = err {
+                reject(err)
+            } else {
+                resolve()
+            }
+        })
+    }
+
+    @objc(stop)
+    func stop(resolve: RCTPromiseResolveBlock,
+               reject: RCTPromiseRejectBlock) {
+        self.engine.stop(completionHandler: { (err) in
+            if let err = err {
+                reject(err)
+            } else {
+                resolve()
+            }
+        })
     }
 }

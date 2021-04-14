@@ -6,6 +6,7 @@ declare type HapticEngineType = {
     create(): Promise<HapticEngineType>;
     makePlayer(pattern: typeof HapticPattern): Promise<typeof HapticPatternPlayer>;
     start(): Promise<void>;
+    stop(): Promise<void>;
 };
 declare const _default: HapticEngineType;
 export default _default;

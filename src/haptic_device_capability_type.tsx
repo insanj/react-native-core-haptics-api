@@ -5,8 +5,6 @@ type HapticDeviceCapabiltyType = {
   supportsAudio: boolean;
 };
 
-const { 
-  HapticDeviceCapabilty,
-} = NativeModules;
+const { HapticDeviceCapabilty } = NativeModules;
 
 export default HapticDeviceCapabilty as HapticDeviceCapabiltyType;

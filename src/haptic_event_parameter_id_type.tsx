@@ -1,11 +1,10 @@
 import { NativeModules } from 'react-native';
 
 type HapticEventParameterIDType = {
-    rawValue: string;
+  rawValue: string;
+  new (rawValue: string): HapticEventParameterIDType;
 };
 
-const { 
-    HapticEventParameterID,
-} = NativeModules;
+const { HapticEventParameterID } = NativeModules;
 
 export default HapticEventParameterID as HapticEventParameterIDType;
