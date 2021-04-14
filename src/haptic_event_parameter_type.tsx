@@ -5,7 +5,7 @@ import type HapticEventParameterID from './haptic_event_parameter_id_type';
 type HapticEventParameterType = {
   parameterID: typeof HapticEventParameterID;
   value: number;
-  new (
+  create(
     parameterID: typeof HapticEventParameterID,
     value: number
   ): HapticEventParameterType;

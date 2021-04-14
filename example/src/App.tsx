@@ -4,16 +4,25 @@ import { StyleSheet, View, Text } from 'react-native';
 import { HapticEngine } from 'react-native-core-haptics-api';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
+  const [result, setResult] = React.useState<boolean | undefined>();
 
   React.useEffect(() => {
-    const capabilitiesForHardware = HapticEngine.capabilitiesForHardware();
-    setResult(capabilitiesForHardware.supportsHaptics ? 1 : 0);
+    HapticEngine.create().then((engine) => {
+      const capabilities = engine.capabilitiesForHardware();
+      setResult(capabilities.supportsHaptics);
+    }).catch(e => {
+      console.log(e);
+    });
   }, []);
 
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <Text>
+        This Device:{' '}
+        {result
+          ? 'This Device Supports Haptics! :)'
+          : 'This Device Does Not Support Haptics :('}
+      </Text>
     </View>
   );
 }

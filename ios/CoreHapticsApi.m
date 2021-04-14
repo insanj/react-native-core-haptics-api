@@ -4,27 +4,51 @@
 
 @end
 
+@interface RCT_EXTERN_MODULE(HapticEventParameterID, NSObject)
+
+RCT_EXTERN_METHOD(create:(NSString *)rawValue)
+
+@end
+
 @interface RCT_EXTERN_MODULE(HapticEventParameter, NSObject)
+
+RCT_EXTERN_METHOD(create:(HapticEventParameterID *)parameterID
+                  value:(float)value)
+
 
 @end
 
 @interface RCT_EXTERN_MODULE(HapticEventEventType, NSObject)
 
+RCT_EXTERN_METHOD(create:(NSString *)rawValue)
+
 @end
 
 @interface RCT_EXTERN_MODULE(HapticEvent, NSObject)
 
+RCT_EXTERN_METHOD(create:(HapticEventEventType *)eventType 
+                  parameters:(NSArray *)parameters 
+                  relativeTime:(float)relativeTime 
+                  duration:(float)duration)
+
 @end
 
 @interface RCT_EXTERN_MODULE(HapticPattern, NSObject)
+
+RCT_EXTERN_METHOD(create:(NSArray *)hapticEvents)
 
 @end
 
 @interface RCT_EXTERN_MODULE(HapticPatternPlayer, NSObject)
 
 RCT_EXTERN_METHOD(start:(float)startTime
-                  withResolver:(RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject)
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
++ (BOOL)requiresMainQueueSetup
+{
+    return YES;
+}
 
 @end
 
@@ -32,17 +56,17 @@ RCT_EXTERN_METHOD(start:(float)startTime
 
 RCT_EXTERN_METHOD(capabilitiesForHardware)
 
-RCT_EXTERN_METHOD(createWithResolver:(RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(create:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(makePlayer:(HapticPattern)hapticPattern
-                  withResolver:(RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject)
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(startWithResolver:(RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(start:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(stopWithResolver:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(stop:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
 + (BOOL)requiresMainQueueSetup

@@ -1,16 +1,27 @@
+/**
+*   Welcome to CoreHapticsApi.swift
+*   Created by Julian Weiss for Gamebytes Apr 2021
+*   
+*   All classes are meant to be exposed to React Native, and are simply the unprefixed, non-namespaced CoreHaptics types.
+*   All extensions are intenal functions that are not exposed, and primarily are used to build the underlying CoreHaptics objects.
+*/
+
 import CoreHaptics
 
 // MARK: - HapticDeviceCapabilty
 
 @objc(HapticDeviceCapabilty)
 class HapticDeviceCapabilty: NSObject {
-    let supportsHaptics: Bool
-    let supportsAudio: Bool
+    var supportsHaptics: Bool?
+    var supportsAudio: Bool?
+}
 
-    @objc
-    init(_ capabilities: CHHapticDeviceCapabilty) {
+extension HapticDeviceCapabilty {
+    @objc(createWithCapabilities:)
+    func create(_ capabilities: CoreHaptics.CHHapticDeviceCapability) -> HapticDeviceCapabilty {
         self.supportsHaptics = capabilities.supportsHaptics
         self.supportsAudio = capabilities.supportsAudio
+        return self
     }
 }
 
@@ -18,17 +29,22 @@ class HapticDeviceCapabilty: NSObject {
 
 @objc(HapticEventParameterID)
 class HapticEventParameterID: NSObject {
-    let rawValue: String
+    var rawValue: String?
     
-    @objc
-    init(_ rawValue: String) {
+    @objc(create:)
+    func create(_ rawValue: String) -> HapticEventParameterID {
         self.rawValue = rawValue
+        return self
     }
 }
 
 extension HapticEventParameterID {
-    func parameterID() -> CHHapticEvent.ParameterID {
-        return CHHapticEvent.ParameterID(rawValue: rawValue)
+    func parameterID() -> CoreHaptics.CHHapticEvent.ParameterID? {
+        guard let rawValue = rawValue else {
+            return nil
+        }
+        
+        return CoreHaptics.CHHapticEvent.ParameterID(rawValue: rawValue)
     }
 }
 
@@ -36,19 +52,24 @@ extension HapticEventParameterID {
 
 @objc(HapticEventParameter)
 class HapticEventParameter: NSObject {
-    let parameterID: HapticEventParameterID
-    let value: Float
+    var parameterID: HapticEventParameterID?
+    var value: Float?
     
-    @objc
-    init(_ parameterID: HapticEventParameterID, value: Float) {
+    @objc(create:value:)
+    func create(_ parameterID: HapticEventParameterID, _ value: Float) -> HapticEventParameter {
         self.parameterID = parameterID
         self.value = value
+        return self
     }
 }
 
 extension HapticEventParameter {
-    func eventParameter() -> CHHapticEventParameter {
-        return CHHapticEventParameter(parameterID: parameterID, value: value)
+    func eventParameter() -> CoreHaptics.CHHapticEventParameter? {
+        guard let param = parameterID?.parameterID(), let value = value else {
+            return nil
+        }
+        
+        return CoreHaptics.CHHapticEventParameter(parameterID: param, value: value)
     }
 }
 
@@ -56,17 +77,23 @@ extension HapticEventParameter {
 
 @objc(HapticEventEventType)
 class HapticEventEventType: NSObject {
-    let rawValue: String
+    var rawValue: String?
     
-    @objc
-    init(_ rawValue: String) {
+    @objc(create:)
+    func create(_ rawValue: String) -> HapticEventEventType {
         self.rawValue = rawValue
+        return self
     }
 }
 
+
 extension HapticEventEventType {
-    func eventType() -> CHHapticEvent.EventType {
-        return CHHapticEvent.EventType(rawValue: rawValue)
+    func eventType() -> CoreHaptics.CHHapticEvent.EventType? {
+        guard let rawValue = rawValue else {
+            return nil
+        }
+        
+        return CoreHaptics.CHHapticEvent.EventType(rawValue: rawValue)
     }
 }
 
@@ -74,27 +101,36 @@ extension HapticEventEventType {
 
 @objc(HapticEvent)
 class HapticEvent: NSObject {
-    let eventType: HapticEventEventType
-    let parameters: [HapticEventParameter]
-    let relativeTime: TimeInterval
-    let duration: TimeInterval
+    var eventType: HapticEventEventType?
+    var parameters: [HapticEventParameter]?
+    var relativeTime: TimeInterval?
+    var duration: TimeInterval?
     
-    @objc
-    init(_ eventType: HapticEventEventType,
-         _ parameters: [HapticEventParameter],
-         _ relativeTime: TimeInterval,
-         _ duration: TimeInterval) {
+    @objc(create:parameters:relativeTime:duration:)
+    func create(_ eventType: HapticEventEventType,
+                _ parameters: [HapticEventParameter],
+                _ relativeTime: TimeInterval,
+                _ duration: TimeInterval) -> HapticEvent {
         self.eventType = eventType
         self.parameters = parameters
         self.relativeTime = relativeTime
         self.duration = duration
+        return self
     }
 }
 
 extension HapticEvent {
-    func hapticEvent() -> CHHapticEvent {
-        let eventParameters = parameters.map() { $0.eventParameter() }
-        return CHHapticEvent(eventType: eventType.eventType(),
+    func hapticEvent() -> CoreHaptics.CHHapticEvent? {
+        guard let hapticsEventType = eventType?.eventType() else {
+            return nil
+        }
+        
+        guard let parameters = parameters, let relativeTime = relativeTime, let duration = duration else {
+            return nil
+        }
+        
+        let eventParameters = parameters.compactMap() { $0.eventParameter() }
+        return CoreHaptics.CHHapticEvent(eventType: hapticsEventType,
                              parameters: eventParameters,
                              relativeTime: relativeTime,
                              duration: duration)
@@ -105,18 +141,23 @@ extension HapticEvent {
 
 @objc(HapticPattern)
 class HapticPattern: NSObject {
-    let hapticEvents: [HapticEvent]
+    var hapticEvents: [HapticEvent]?
     
-    @objc
-    init(_ hapticEvents: [HapticEvent]) {
+    @objc(create:)
+    func create(_ hapticEvents: [HapticEvent]) -> HapticPattern {
         self.hapticEvents = hapticEvents
+        return self
     }
 }
 
 extension HapticPattern {
-    func hapticPattern() -> CHHapticPattern {
-        let events = hapticEvents.map() { $0.hapticEvent() }
-        return CHHapticPattern(events: events, parameters: [])
+    func hapticPattern() throws -> CoreHaptics.CHHapticPattern? {
+        guard let hapticEvents = hapticEvents else {
+            return nil
+        }
+        
+        let events = hapticEvents.compactMap() { $0.hapticEvent() }
+        return try CoreHaptics.CHHapticPattern(events: events, parameters: [])
     }
 }
 
@@ -124,22 +165,30 @@ extension HapticPattern {
 
 @objc(HapticPatternPlayer)
 class HapticPatternPlayer: NSObject {
-    let player: CHHapticPatternPlayer
-    
-    init(_ player: CHHapticPatternPlayer) {
-        self.player = player
-    }
+    var player: CoreHaptics.CHHapticPatternPlayer?
     
     @objc(start:resolve:reject:)
     func start(startTime: TimeInterval,
                resolve: RCTPromiseResolveBlock,
                reject: RCTPromiseRejectBlock) {
-        do {
-            try self.player.start(atTime: startTime)
-            resolve()
-        } catch let e {
-            reject(e)
+        guard let player = self.player else {
+            reject("Unable to start player", "No player has been created", nil);
+            return
         }
+        
+        do {
+            try player.start(atTime: startTime)
+            resolve(nil)
+        } catch let e {
+            reject("Unable to start player", e.localizedDescription, e)
+        }
+    }
+}
+
+extension HapticPatternPlayer {
+    func create(_ player: CoreHaptics.CHHapticPatternPlayer) -> HapticPatternPlayer {
+        self.player = player
+        return self
     }
 }
 
@@ -147,14 +196,12 @@ class HapticPatternPlayer: NSObject {
 
 @objc(HapticEngine)
 class HapticEngine: NSObject {
-    let engine: CHHapticEngine
-    init(_ engine: CHHapticEngine) {
-        self.engine = engine
-    }
+    var engine: CoreHaptics.CHHapticEngine?
     
     @objc(capabilitiesForHardware)
     func capabilitiesForHardware() -> HapticDeviceCapabilty {
-        let capability = HapticDeviceCapabilty(CHHapticEngine.capabilitiesForHardware())
+        var capability = HapticDeviceCapabilty()
+        capability = capability.create(CoreHaptics.CHHapticEngine.capabilitiesForHardware())
         return capability
     }
     
@@ -162,50 +209,71 @@ class HapticEngine: NSObject {
     func create(resolve: RCTPromiseResolveBlock,
          reject: RCTPromiseRejectBlock) {
         do {
-            let engine = try? CHHapticEngine()
-            let hapticEngine = HapticEngine(engine)
-            resolve(hapticEngine)
+            self.engine = try CoreHaptics.CHHapticEngine()
+            resolve(self)
         } catch let e {
-            reject(e)
+            reject("Unable to create engine", e.localizedDescription, e)
         }
     }
     
-    @objc(makePlayer:)
+    @objc(makePlayer:resolve:reject:)
     func makePlayer(pattern: HapticPattern,
                     resolve: RCTPromiseResolveBlock,
                     reject: RCTPromiseRejectBlock) {
-        
-        let hapticPattern = pattern.hapticPattern()
-        
         do {
-            let player = try? self.engine.makePlayer(with: hapticPattern)
-            let patternPlayer = HapticPatternPlayer(player)
+            guard let hapticPattern = try pattern.hapticPattern() else {
+                reject("Unable to make haptic pattern", "Unknown error", nil)
+                return
+            }
+            
+            guard let engine = self.engine else {
+                reject("No engine found", "Unknown error", nil)
+                return
+            }
+            
+            guard let player = try? engine.makePlayer(with: hapticPattern) else {
+                reject("Unable to make player from engine", "Unknown error", nil)
+                return
+            }
+            
+            var patternPlayer = HapticPatternPlayer()
+            patternPlayer = patternPlayer.create(player)
             resolve(patternPlayer)
         } catch let e {
-            reject(e)
+            reject("Unable to make player", e.localizedDescription, e)
         }
     }
 
-    @objc(start)
-    func start(resolve: RCTPromiseResolveBlock,
-               reject: RCTPromiseRejectBlock) {
-        self.engine.start(completionHandler: { (err) in
+    @objc(start:reject:)
+    func start(resolve: @escaping RCTPromiseResolveBlock,
+               reject: @escaping RCTPromiseRejectBlock) {
+        guard let engine = engine else {
+            reject("No engine found", "Unknown error", nil)
+            return
+        }
+        
+        engine.start(completionHandler: { (err) in
             if let err = err {
-                reject(err)
+                reject("Unable to start engine", err.localizedDescription, err)
             } else {
-                resolve()
+                resolve(nil)
             }
         })
     }
 
-    @objc(stop)
-    func stop(resolve: RCTPromiseResolveBlock,
-               reject: RCTPromiseRejectBlock) {
-        self.engine.stop(completionHandler: { (err) in
+    @objc(stop:reject:)
+    func stop(resolve: @escaping RCTPromiseResolveBlock,
+               reject: @escaping RCTPromiseRejectBlock) {
+        guard let engine = engine else {
+            reject("No engine found", "Unknown error", nil)
+            return
+        }
+        
+        engine.stop(completionHandler: { (err) in
             if let err = err {
-                reject(err)
+                reject("Unable to stop engine", err.localizedDescription, err)
             } else {
-                resolve()
+                resolve(nil)
             }
         })
     }

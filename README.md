@@ -79,20 +79,20 @@ if (shouldStop) {
 let patterns = [];
 for (let event in events) {
     const parameters = event.eventParameters.map(parameter => {
-        const parameterID = new HapticEventParameterID(parameter.id);
+        const parameterID = HapticEventParameterID.create(parameter.id);
         const value = parameter.value;
-        const eventParameter = new HapticEventParameter(
+        const eventParameter = HapticEventParameter.create(
             parameterID, 
             value
         );
         return eventParameter;
     });
 
-    const eventType = HapticEventEventType(event.eventType);
+    const eventType = HapticEventEventType.create(event.eventType);
     const relativeTime = event.relativeTime;
     const duration = event.duration;
 
-    const hapticEvent = new HapticEvent(
+    const hapticEvent = HapticEvent.create(
         eventType, 
         parameters, 
         relativeTime, 
@@ -102,7 +102,7 @@ for (let event in events) {
     const hapticEvents = [hapticEvent];
 
      try {
-        const pattern = new HapticPattern(
+        const pattern = HapticPattern.create(
             hapticEvents
         );
     } catch (e) {

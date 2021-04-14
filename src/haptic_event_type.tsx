@@ -8,7 +8,7 @@ type HapticEventType = {
   parameters: [typeof HapticEventParameter];
   relativeTime: number;
   duration: number;
-  new (
+  create(
     eventType: typeof HapticEventEventType,
     parameters: [typeof HapticEventParameter],
     relativeTime: number,

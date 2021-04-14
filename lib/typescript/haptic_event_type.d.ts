@@ -5,7 +5,7 @@ declare type HapticEventType = {
     parameters: [typeof HapticEventParameter];
     relativeTime: number;
     duration: number;
-    new (eventType: typeof HapticEventEventType, parameters: [typeof HapticEventParameter], relativeTime: number, duration: number): HapticEventType;
+    create(eventType: typeof HapticEventEventType, parameters: [typeof HapticEventParameter], relativeTime: number, duration: number): HapticEventType;
 };
 declare const _default: HapticEventType;
 export default _default;
