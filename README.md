@@ -13,7 +13,7 @@ react-native-core-haptics-api is a lightweight iOS-only module designed to expos
 - `-makePlayer`
 - `-start`
 
-This requires surfacing the following classes:
+This requires surfacing the following interfaces:
 
 - `HapticDeviceCapabilty`
 - `HapticEventParameterID`
@@ -21,10 +21,12 @@ This requires surfacing the following classes:
 - `HapticEventEventType`
 - `HapticEvent`
 - `HapticPattern`
-- `HapticPatternPlayer`
+
+Which provide JSON representations of all required iOS objects. All functionality is funneled through the central type:
+
 - `HapticEngine`
 
-These features are made available using syntax and patterns that resemble the native Swift implementation as closely as possible.
+These features are made available using syntax and patterns that resemble the native Swift implementation as closely as possible. This means largely remodeling the flow to use a singleton-based structure with TypeScript interfaces, and thus no direct handoff of native objects (which is not supported in React Native modules as of today).
 
 No other functionality is planned for this library, although feature parity with iOS Core Haptics is technically possible.
 
@@ -46,84 +48,115 @@ npm install SnowcodeDesign/react-native-core-haptics-api
 
 ```js
 // import the needed classes at the top of the file
-import { HapticEngine, HapticEventParameterID, HapticEventParameter, HapticEventEventType, HapticEvent, HapticEvent, HapticPattern } from 'SnowcodeDesign/react-native-core-haptics-api';
+import { HapticEngine, 
+  HapticPatternType, 
+  HapticEventType,
+  HapticEventParameterType,
+  HapticEventParameterIDType,
+  HapticEventEventTypeType,
+  HapticDeviceCapabilityType
+} from 'react-native-core-haptics-api';
 
-// when setting up your component...
-await HapticEngine.create();
+// this is copy & paste from ./example/src/App.tsx
+const playExampleHapticPattern = async () => {
+    // before running, it's a good idea to check if the device supports haptics
+    const capabilities = await HapticEngine.getDeviceCapabilities() as HapticDeviceCapabilityType;
+    if (!capabilities.supportsHaptics) {
+        throw new Error("Device does not support haptics :(");
+    }
 
-// later down, in the implementation...
-const startTime = 0;
-const events = [{
-    eventParameters: [{
-        id: "HapticIntensity",
-        value: 1,
-    }, {
-        id: "HapticSharpness",
+    // build the patterns that the HapticEngine has to play
+    const hapticEvent = {} as HapticEventType;
+
+    // the first two properties are simple number (TimeInterval) value
+    hapticEvent.duration = 0.5;
+    hapticEvent.relativeTime = 0;
+
+    // now, let's provide the eventType, a tiny JSON object with a string underlying value. we wrap this object in order to support enum checking (and other features) in the future.
+    const eventType: HapticEventEventTypeType = {
+        rawValue: "HapticContinuous"
+    };
+
+    hapticEvent.eventType = eventType;
+
+    // next, we provide the parameters (i.e. keyframes) for this pattern, each a float-pointing value with an identifier to associate that value with the proper Haptic config option
+    const parameters: HapticEventParameterType[] = [];
+
+    const intensityParameterID: HapticEventParameterIDType = {
+        rawValue: "HapticIntensity"
+    };
+
+    const intensityParameter: HapticEventParameterType = {
+        parameterID: intensityParameterID,
+        value: 1
+    };
+
+    parameters.push(intensityParameter);
+
+    const sharpnessParameterID: HapticEventParameterIDType = {
+        rawValue: "HapticSharpness"
+    };
+
+    const sharpnessParameter: HapticEventParameterType = {
+        parameterID: sharpnessParameterID,
         value: 0.6
-    }],
-    eventType: "HapticContinuous",
-    duration: 0.5,
-    relativeTime: 0
-}];
+    };
 
-// then, when you're ready to play...
-await HapticEngine.capabilitiesForHardware();
-if (!HapticEngine.getCapabilities().supportsHaptics) {
-    return;
-}
+    parameters.push(sharpnessParameter);
 
-const shouldStop = false;
-if (shouldStop) {
-    await HapticEngine.stop();
-    return;
-}
+    hapticEvent.parameters = parameters;
 
-// to chain together patterns and haptic events...
-let patterns = [];
-for (let event in events) {
-    const parameters = event.eventParameters.map(parameter => {
-        const parameterID = HapticEventParameterID.create(parameter.id);
-        const value = parameter.value;
-        const eventParameter = HapticEventParameter.create(
-            parameterID, 
-            value
-        );
-        return eventParameter;
-    });
+    // okay, now we've fully assembled our "event" object, which we can now send through to the CoreHaptics API
+    // this should match the following layout:
+    // const event = {
+    //     parameters: [{
+    //         parameterID: {
+    //             rawValue: "HapticIntensity"
+    //         },
+    //         value: 1,
+    //     }, {
+    //         parameterID: {
+    //             "HapticSharpness",
+    //         },
+    //         value: 0.6
+    //     }],
+    //     eventType: {
+    //         rawValue: "HapticContinuous",
+    //     },
+    //     duration: 0.5,
+    //     relativeTime: 0
+    // };
 
-    const eventType = HapticEventEventType.create(event.eventType);
-    const relativeTime = event.relativeTime;
-    const duration = event.duration;
+    // and we can pull multiple events into a complex pattern like so
+    const hapticEvents: HapticEventType[] = [
+        hapticEvent
+    ];
 
-    const hapticEvent = HapticEvent.create(
-        eventType, 
-        parameters, 
-        relativeTime, 
-        duration
-    );
+    const pattern: HapticPatternType = {
+        hapticEvents
+    };
 
-    const hapticEvents = [hapticEvent];
+    // when we're ready to play, we must first start the HapticEngine (if it has never been started before). we can provide a UUID instead of null if we need more than one HapticEngine.
+    await HapticEngine.start(undefined);
 
-     try {
-        const pattern = HapticPattern.create(
-            hapticEvents
-        );
-    } catch (e) {
-        continue;
-    }
+    // now, we create a player for this specific pattern (which is cached based on the setup of the pattern)
+    await HapticEngine.makePlayer(pattern, undefined);
 
-    if (!pattern) {
-        continue;
-    }
+    // play time! finds the player and engine in memory based on UUID and pattern data
+    const startTime = 0;
+    await HapticEngine.startPlayerAtTime(pattern, startTime, undefined);
 
-    patterns.push(pattern);
-}
-
-// now, time to play all the constructed patterns...
-for (let pattern of patterns) {
-    await engine.makePlayer(pattern); // no need to store a ref, handled by engine internally
-    await engine.start();
-    await engine.getPlayer().start(startTime);
+    setTimeout(() => {
+      // and when we're ready to stop, we can do
+      HapticEngine.stop(undefined)
+        .then(() => {
+            // yay happy path :)
+        })
+        .catch(stopError => {
+          console.error(stopError);
+        })
+    }, 1000);
+  }
 }
 ```
 
@@ -132,7 +165,7 @@ for (let pattern of patterns) {
 ```
 Julian Weiss
 snowcode.design
-(c) 2021 Gamebytes
+(c) 2021 Julian Weiss & Gamebytes
 ```
 
 ## License
@@ -140,7 +173,7 @@ snowcode.design
 ```
 MIT License
 
-Copyright (c) 2021 Gamebytes
+Copyright (c) 2021 Julian Weiss & Gamebytes
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

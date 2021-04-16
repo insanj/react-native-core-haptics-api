@@ -1,6 +1,3 @@
-declare type HapticEventParameterIDType = {
+export default interface HapticEventParameterID {
     rawValue: string;
-    create(rawValue: string): HapticEventParameterIDType;
-};
-declare const _default: HapticEventParameterIDType;
-export default _default;
+}

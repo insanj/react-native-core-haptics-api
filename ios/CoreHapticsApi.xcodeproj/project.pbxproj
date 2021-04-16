@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F4FF95D7245B92E800C19C63 /* CoreHapticsApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FF95D6245B92E800C19C63 /* CoreHapticsApi.swift */; };
+		B96E3B20262A027600DA90D1 /* HapticEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96E3B1F262A027600DA90D1 /* HapticEngine.swift */; };
+		B96E3B23262A03A500DA90D1 /* HapticPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96E3B22262A03A500DA90D1 /* HapticPattern.swift */; };
+		B96E3B26262A06A100DA90D1 /* HapticDeviceCapability.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96E3B25262A06A100DA90D1 /* HapticDeviceCapability.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,8 +27,10 @@
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libCoreHapticsApi.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCoreHapticsApi.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3E7B5891CC2AC0600A0062D /* CoreHapticsApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreHapticsApi.m; sourceTree = "<group>"; };
+		B96E3B1F262A027600DA90D1 /* HapticEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticEngine.swift; sourceTree = "<group>"; };
+		B96E3B22262A03A500DA90D1 /* HapticPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticPattern.swift; sourceTree = "<group>"; };
+		B96E3B25262A06A100DA90D1 /* HapticDeviceCapability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticDeviceCapability.swift; sourceTree = "<group>"; };
 		F4FF95D5245B92E700C19C63 /* CoreHapticsApi-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CoreHapticsApi-Bridging-Header.h"; sourceTree = "<group>"; };
-		F4FF95D6245B92E800C19C63 /* CoreHapticsApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreHapticsApi.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,7 +55,9 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				F4FF95D6245B92E800C19C63 /* CoreHapticsApi.swift */,
+				B96E3B1F262A027600DA90D1 /* HapticEngine.swift */,
+				B96E3B25262A06A100DA90D1 /* HapticDeviceCapability.swift */,
+				B96E3B22262A03A500DA90D1 /* HapticPattern.swift */,
 				B3E7B5891CC2AC0600A0062D /* CoreHapticsApi.m */,
 				F4FF95D5245B92E700C19C63 /* CoreHapticsApi-Bridging-Header.h */,
 				134814211AA4EA7D00B7C361 /* Products */,
@@ -115,7 +121,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F4FF95D7245B92E800C19C63 /* CoreHapticsApi.swift in Sources */,
+				B96E3B20262A027600DA90D1 /* HapticEngine.swift in Sources */,
+				B96E3B23262A03A500DA90D1 /* HapticPattern.swift in Sources */,
+				B96E3B26262A06A100DA90D1 /* HapticDeviceCapability.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
