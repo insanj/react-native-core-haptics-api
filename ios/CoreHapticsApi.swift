@@ -23,6 +23,14 @@ extension HapticDeviceCapabilty {
         self.supportsAudio = capabilities.supportsAudio
         return self
     }
+    
+    @objc(toJSON)
+    func toJSON() -> [String: Any] {
+        var json: [String: Any] = [:]
+        json["supportsHaptics"] = self.supportsHaptics
+        json["supportsAudio"] = self.supportsAudio
+        return json
+    }
 }
 
 // MARK: - HapticEventParameterID
@@ -181,7 +189,15 @@ extension HapticPatternPlayer {
 class HapticEngine: NSObject {
     var engine: CoreHaptics.CHHapticEngine?
     var player: HapticPatternPlayer?
-        
+    
+    @objc(getDeviceCapabilities:reject:)
+    func getDeviceCapabilities(resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        let hapticCapabilities = CoreHaptics.CHHapticEngine.capabilitiesForHardware()
+        let capabilities = HapticDeviceCapabilty().create(hapticCapabilities)
+        let capabilitiesJSON = capabilities.toJSON()
+        capabilities(capabilitiesJSON);
+    }
+
     @objc(getSupportsHaptics:reject:)
     func getSupportsHaptics(resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         let hapticCapabilities = CoreHaptics.CHHapticEngine.capabilitiesForHardware()

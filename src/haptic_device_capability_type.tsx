@@ -1,10 +1,6 @@
-import { NativeModules } from 'react-native';
-
-type HapticDeviceCapabiltyType = {
+interface HapticDeviceCapabilty {
   supportsHaptics: boolean;
   supportsAudio: boolean;
 };
 
-const { HapticDeviceCapabilty } = NativeModules;
-
-export default HapticDeviceCapabilty as HapticDeviceCapabiltyType;
+export default HapticDeviceCapabilty;

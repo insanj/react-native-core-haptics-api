@@ -1,10 +1,5 @@
-import { NativeModules } from 'react-native';
-
-type HapticEventEventTypeType = {
+interface HapticEventEventType {
   rawValue: string;
-  create(rawValue: string): HapticEventEventTypeType;
-};
+}
 
-const { HapticEventEventType } = NativeModules;
-
-export default HapticEventEventType as HapticEventEventTypeType;
+export default HapticEventEventType;
