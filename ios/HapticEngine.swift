@@ -12,7 +12,7 @@ import CoreHaptics
 @objc(HapticEngine)
 class HapticEngine: NSObject {
     // MARK: - Private API
-    private let shared = HapticEngine()
+    private static let shared = HapticEngine()
     
     private class Key {
         static let defaultEngine: NSString = "default_engine"
@@ -49,14 +49,14 @@ class HapticEngine: NSObject {
                reject: @escaping  RCTPromiseRejectBlock) {
         var engine: CHHapticEngine
         
-        if let existingEngine = shared.engines[uuid ?? Key.defaultEngine] {
+        if let existingEngine = HapticEngine.shared.engines[uuid ?? Key.defaultEngine] {
             engine = existingEngine
         }
         
         else {
             do {
                 let newEngine = try CHHapticEngine()
-                shared.engines[uuid ?? Key.defaultEngine] = newEngine
+                HapticEngine.shared.engines[uuid ?? Key.defaultEngine] = newEngine
                 engine = newEngine
             } catch let e {
                 reject("Unable to create engine", e.localizedDescription, e)
@@ -88,14 +88,14 @@ class HapticEngine: NSObject {
                     reject: RCTPromiseRejectBlock) {
         var engine: CHHapticEngine
         
-        if let existingEngine = shared.engines[uuid ?? Key.defaultEngine] {
+        if let existingEngine = HapticEngine.shared.engines[uuid ?? Key.defaultEngine] {
             engine = existingEngine
         }
         
         else {
             do {
                 let newEngine = try CHHapticEngine()
-                shared.engines[uuid ?? Key.defaultEngine] = newEngine
+                HapticEngine.shared.engines[uuid ?? Key.defaultEngine] = newEngine
                 engine = newEngine
             } catch let e {
                 reject("Unable to create engine", e.localizedDescription, e)
@@ -133,14 +133,14 @@ class HapticEngine: NSObject {
                            reject: RCTPromiseRejectBlock) {
         var engine: CHHapticEngine
         
-        if let existingEngine = shared.engines[uuid ?? Key.defaultEngine] {
+        if let existingEngine = HapticEngine.shared.engines[uuid ?? Key.defaultEngine] {
             engine = existingEngine
         }
         
         else {
             do {
                 let newEngine = try CHHapticEngine()
-                shared.engines[uuid ?? Key.defaultEngine] = newEngine
+                HapticEngine.shared.engines[uuid ?? Key.defaultEngine] = newEngine
                 engine = newEngine
             } catch let e {
                 reject("Unable to create engine", e.localizedDescription, e)
@@ -156,7 +156,7 @@ class HapticEngine: NSObject {
 
         var hapticPatternPlayer: CHHapticPatternPlayer
         
-        if let existingPatternPlayer = shared.players[pattern] {
+        if let existingPatternPlayer = HapticEngine.shared.players[pattern] {
             hapticPatternPlayer = existingPatternPlayer
         }
         
@@ -195,7 +195,7 @@ class HapticEngine: NSObject {
     func stop(uuid: NSString?,
               resolve: @escaping RCTPromiseResolveBlock,
               reject: @escaping RCTPromiseRejectBlock) {
-        guard let existingEngine = shared.engines[uuid ?? Key.defaultEngine] else {
+        guard let existingEngine = HapticEngine.shared.engines[uuid ?? Key.defaultEngine] else {
             reject("Unable to find engine", "Engine has not been created", nil)
             return
         }
