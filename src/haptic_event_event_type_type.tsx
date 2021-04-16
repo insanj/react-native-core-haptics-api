@@ -1,5 +1,3 @@
-interface HapticEventEventType {
+export default interface HapticEventEventType {
   rawValue: string;
 }
-
-export default HapticEventEventType;

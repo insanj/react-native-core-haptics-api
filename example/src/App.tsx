@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { StyleSheet, View, Text } from 'react-native';
-import { HapticEngine } from 'react-native-core-haptics-api';
+import { HapticEngine, HapticDeviceCapabilityType } from 'react-native-core-haptics-api';
 
 export default function App() {
   const [result, setResult] = React.useState<string | undefined>(
@@ -9,49 +9,19 @@ export default function App() {
   );
 
   React.useEffect(() => {
-    HapticEngine.getSupportsHaptics().then((supportsHaptics) => {
-      if (supportsHaptics) {
-        setResult('Supports Haptics! :)');
-      } else {
-        setResult('Does Not Support Haptics :(');
-      }
-    });
-
-    // HapticEngine.create()
-    //   .then((success) => {
-    //     console.log('HapticEngine.create() response =', success);
-
-    //     if (!success) {
-    //       setResult('Cannot detect if it supports haptics :/');
-    //       return;
-    //     }
-
-    //     HapticEngine.capabilitiesForHardware()
-    //       .then((capable) => {
-    //         console.log(
-    //           'HapticEngine.capabilitiesForHardware() response =',
-    //           capable
-    //         );
-
-    //         const capabilities = HapticEngine.getCapabilities();
-    //         console.log(
-    //           'HapticEngine.getCapabilities() response =',
-    //           capabilities
-    //         );
-
-    //         if (capabilities.supportsHaptics) {
-    //           setResult('Supports Haptics! :)');
-    //         } else {
-    //           setResult('Does Not Support Haptics :(');
-    //         }
-    //       })
-    //       .catch((e) => {
-    //         console.log(e);
-    //       });
-    //   })
-    //   .catch((e) => {
-    //     console.log(e);
-    //   });
+    HapticEngine.getDeviceCapabilities()
+      .then(capabilities => {
+        console.log("HapticEngine.getDeviceCapabilities() result =", capabilities);
+        const hapticCapability = capabilities as HapticDeviceCapabilityType;
+        if (hapticCapability.supportsHaptics) {
+          setResult("Supports Haptics! :)");
+        } else {
+          setResult("Does Not Support Haptics :(");
+        }
+      }).catch(err => {
+        console.error("HapticEngine.getDeviceCapabilities() error =", err);
+        setResult("Unable to check capabilities :/");
+      })
   }, []);
 
   return (

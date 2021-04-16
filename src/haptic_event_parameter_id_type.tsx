@@ -1,5 +1,3 @@
-interface HapticEventParameterID {
+export default interface HapticEventParameterID {
   rawValue: string;
 };
-
-export default HapticEventParameterID;

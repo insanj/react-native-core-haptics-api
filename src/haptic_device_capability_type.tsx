@@ -1,6 +1,6 @@
-interface HapticDeviceCapabilty {
+
+export default interface HapticDeviceCapability {
   supportsHaptics: boolean;
   supportsAudio: boolean;
 };
 
-export default HapticDeviceCapabilty;

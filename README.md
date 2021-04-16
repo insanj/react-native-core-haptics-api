@@ -21,7 +21,6 @@ This requires surfacing the following interfaces:
 - `HapticEventEventType`
 - `HapticEvent`
 - `HapticPattern`
-- `HapticPatternPlayer`
 
 Which provide JSON representations of all required iOS objects. All functionality is funneled through the central type:
 
