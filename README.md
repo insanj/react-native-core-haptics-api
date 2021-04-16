@@ -35,7 +35,7 @@ Read more about [Core Haptics on the Apple Developer site](https://developer.app
 ## Install
 
 ```sh
-yarn install react-native-core-haptics-api
+yarn add react-native-core-haptics-api
 ```
 
 or

@@ -1,6 +1,6 @@
 {
   "name": "react-native-core-haptics-api",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "✋ React Native → iOS Core Haptics",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
