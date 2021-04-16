@@ -10,14 +10,14 @@ RCT_EXTERN_METHOD(start:(NSString *)uuid
                 resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(makePlayer:(NSString *)uuid
-                     pattern:(NSDictionary *)pattern
+RCT_EXTERN_METHOD(makePlayer:(NSDictionary *)pattern
+                        uuid:(NSString *)uuid
                      resolve:(RCTPromiseResolveBlock)resolve
                       reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(startPlayerAtTime:(NSString *)uuid
-                            pattern:(NSDictionary *)pattern
+RCT_EXTERN_METHOD(startPlayerAtTime:(NSDictionary *)pattern
                           startTime:(CGFloat)startTime
+                               uuid:(NSString *)uuid
                             resolve:(RCTPromiseResolveBlock)resolve
                              reject:(RCTPromiseRejectBlock)reject)
 

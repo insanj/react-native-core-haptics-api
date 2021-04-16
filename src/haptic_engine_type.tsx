@@ -17,7 +17,7 @@ type HapticEngineType = {
    * @param uuid Optional UUID to associate with the HapticEngine if more than one is needed
    * @returns Resolving Promise with boolean indicating if it was possible to create/start the engine
    */
-  start(uuid: string): Promise<boolean>;
+  start(uuid?: string): Promise<boolean>;
 
   /**
    * Creates a new HapticPatternPlayer with given HapticPattern. Will create an engine before making a player if does not exist, although you will still have to use -start to start the engine. This player is stored in the HapticEngine singleton. Once the engine is started, this player may also be started at a given time using -startPlayerAtTime. The correct player is chosen by matching the HapticPattern given here (a simple equality check using parameterID and value). A HapticPattern is a type which consists of:
@@ -27,7 +27,7 @@ type HapticEngineType = {
    * @param pattern Pattern to use when creating a new player
    * @returns Resolving Promise with boolean indicating if it was possible to create the player
    */
-  makePlayer(uuid: string, pattern: HapticPattern): Promise<boolean>;
+  makePlayer(pattern: HapticPattern, uuid?: string): Promise<boolean>;
 
   /**
    * Starts an existing HapticPatternPlayer at a given time. If the player does not exist, the HapticEngine will attempt to create it using -makePlayer before resolving. If the engine does not exist, the HapticEngine will attempt to also create and start that before resolving. If the engine does exist, we assume it has already been started.
@@ -35,14 +35,14 @@ type HapticEngineType = {
    * @param startTime number (TimeInterval) offset to begin the pattern
    * @returns Resolving Promise with boolean indicating if it was possible to start the player (and create it if needed)
    */
-  startPlayerAtTime(uuid: string, pattern: HapticPattern, startTime: number): Promise<boolean>;
+  startPlayerAtTime(pattern: HapticPattern, startTime: number, uuid?: string): Promise<boolean>;
 
   /**
    * Stops the HapticEngine immediately. If a UUID is given, the engine with the expected UUID is stopped. If no UUID is given, then the default engine is stopped.
    * @param uuid Optional UUID representing the HapticEngine from -start
    * @returns Resolving Promise with boolean indicating if it was possible to stop
    */
-  stop(uuid: String): Promise<boolean>;
+  stop(uuid?: String): Promise<boolean>;
 };
 
 const { HapticEngine } = NativeModules;

@@ -81,9 +81,9 @@ class HapticEngine: NSObject {
      * @param pattern Pattern to use when creating a new player
      * @returns Resolving Promise with boolean indicating if it was possible to create the player
      */
-    @objc(makePlayer:pattern:resolve:reject:)
-    func makePlayer(uuid: NSString?,
-                    pattern: HapticPattern,
+    @objc(makePlayer:uuid:resolve:reject:)
+    func makePlayer(pattern: HapticPattern,
+                    uuid: NSString?,
                     resolve: RCTPromiseResolveBlock,
                     reject: RCTPromiseRejectBlock) {
         var engine: CHHapticEngine
@@ -125,10 +125,10 @@ class HapticEngine: NSObject {
      * @param startTime number (TimeInterval) offset to begin the pattern
      * @returns Resolving Promise with boolean indicating if it was possible to start the player (and create it if needed)
      */
-    @objc(startPlayerAtTime:pattern:startTime:resolve:reject:)
-    func startPlayerAtTime(uuid: NSString?,
-                           pattern: HapticPattern,
+    @objc(startPlayerAtTime:startTime:uuid:resolve:reject:)
+    func startPlayerAtTime(pattern: HapticPattern,
                            startTime: CGFloat,
+                           uuid: NSString?,
                            resolve: RCTPromiseResolveBlock,
                            reject: RCTPromiseRejectBlock) {
         var engine: CHHapticEngine
