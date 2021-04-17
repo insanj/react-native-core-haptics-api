@@ -35,13 +35,13 @@ Read more about [Core Haptics on the Apple Developer site](https://developer.app
 ## Install
 
 ```sh
-yarn install SnowcodeDesign/react-native-core-haptics-api
+yarn add react-native-core-haptics-api
 ```
 
 or
 
 ```sh
-npm install SnowcodeDesign/react-native-core-haptics-api
+npm install react-native-core-haptics-api
 ```
 
 ## Usage
