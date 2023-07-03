@@ -21,6 +21,9 @@ class HapticEngine: NSObject {
     private var engines: [NSString: CHHapticEngine] = [:]
     private var players: [HapticPattern: CHHapticPatternPlayer] = [:]
     
+    // store the last player in memory to allow cancellation
+    private var hapticPatternPlayer: CHHapticPatternPlayer? = nil
+
     // MARK: - Public API
     /**
      * Get JSON representation of HapticDeviceCapabilty. Currently supported keys:
@@ -133,6 +136,15 @@ class HapticEngine: NSObject {
                            reject: RCTPromiseRejectBlock) {
         var engine: CHHapticEngine
         
+        if let hapticPatternPlayer {
+            do {
+                try hapticPatternPlayer.stop(atTime: .zero)
+            } catch let e {
+                reject("Unable to stop the active player before starting the new haptic pattern", e.localizedDescription, e)
+                return
+            }
+        }
+
         if let existingEngine = HapticEngine.shared.engines[uuid ?? Key.defaultEngine] {
             engine = existingEngine
         }
@@ -153,8 +165,6 @@ class HapticEngine: NSObject {
                 reject("Unable to start engine", e.localizedDescription, e)
             }
         }
-
-        var hapticPatternPlayer: CHHapticPatternPlayer
         
         if let existingPatternPlayer = HapticEngine.shared.players[pattern] {
             hapticPatternPlayer = existingPatternPlayer
@@ -178,7 +188,7 @@ class HapticEngine: NSObject {
         }
         
         do {
-            try hapticPatternPlayer.start(atTime: TimeInterval(startTime))
+            try hapticPatternPlayer?.start(atTime: TimeInterval(startTime))
             
             resolve(true)
         } catch let e {
@@ -200,10 +210,11 @@ class HapticEngine: NSObject {
             return
         }
         
-        existingEngine.stop { (err) in
+        existingEngine.stop { [weak self] (err) in
             if let err = err {
                 reject("Unable to stop engine", err.localizedDescription, nil)
             } else {
+                self?.hapticPatternPlayer = nil
                 resolve(true)
             }
         }
